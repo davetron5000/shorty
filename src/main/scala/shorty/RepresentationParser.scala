@@ -14,7 +14,7 @@ trait RepresentationParser extends Logs {
     val param = request.getParameter(TYPE_PARAM)
     if (param != null) {
       if (knownTypes.contains(param) ) {
-      Some(request.getParameter(TYPE_PARAM).toLowerCase)
+        Some(request.getParameter(TYPE_PARAM).toLowerCase)
       }
       else {
         None

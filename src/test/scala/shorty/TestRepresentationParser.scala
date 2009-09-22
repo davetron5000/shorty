@@ -49,6 +49,6 @@ class TestRepresentationParser extends BaseTest {
       val t = parser.determineRepresentation(request)
       t should equal ("text/xml")
     }
-    */
   }
+    */
 }

@@ -13,14 +13,14 @@ trait MethodParser {
    * THis allows for tunnelling
    */
   def determineMethod(request:HttpServletRequest) = {
-    var method = request.getMethod
-    if (request.getHeader(METHOD_HEADER) != null) {
-      method = request.getHeader(METHOD_HEADER)
-    }
-    if (request.getParameter(METHOD_PARAM) != null) {
-      method = request.getParameter(METHOD_PARAM)
-    }
-    method.toLowerCase
+    def methodHelper = 
+      if (request.getParameter(METHOD_PARAM) != null) 
+        request.getParameter(METHOD_PARAM)
+      else if (request.getHeader(METHOD_HEADER) != null) 
+        request.getHeader(METHOD_HEADER)
+      else 
+        request.getMethod
+    methodHelper.toLowerCase
   }
 
 
