@@ -4,7 +4,9 @@ import java.io._
 
 import com.sleepycat.je._
 
-/** Berkeley DB, use the DB object to create instances. */
+/** Berkeley DB, use the DB object to create instances. 
+  * This is a low-level key/value interface.
+  */
 class DB(env:Environment,name:String) extends Logs {
   val database = {
     val config = new DatabaseConfig
