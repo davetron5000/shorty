@@ -2,6 +2,12 @@ package shorty.db
 
 import java.io._
 
+import scala.actors._
+
+import org.scalatest._
+import org.scalatest.matchers._
+
+
 import shorty._
 
 class TestURIHasher extends BaseTest {
@@ -30,6 +36,21 @@ class TestURIHasher extends BaseTest {
   describe("Hasher") {
     it ("should initially be empty") {
       hasher.size should equal(0)
+    }
+    it ("should return the hash for a URI") {
+      hasher.start
+      new TestSender(hasher,URI("http://www.google.com"),"1234")
+    }
+  }
+}
+
+class TestSender(hasher:URIHasher,message:URIHashMessage,expectedReturn:String) extends Actor with ShouldMatchers {
+  def act() {
+    hasher ! message
+    receive {
+      case hash:String => {
+        hash should equal(expectedReturn)
+      }
     }
   }
 }
