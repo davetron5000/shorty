@@ -22,7 +22,7 @@ class TestDB extends BaseTest {
     (tmpFile,newDB(tmpFile))
   }
 
-  private def newDB(file:File) = new DB(file)
+  private def newDB(file:File) = new FileDB(file)
 
   describe("DB") {
     it ("should initially be empty") {
