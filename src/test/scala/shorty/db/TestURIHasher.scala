@@ -39,7 +39,7 @@ class TestURIHasher extends BaseTest {
     }
     it ("should return the hash for a URI") {
       hasher.start
-      new TestSender(hasher,URI("http://www.google.com"),"1234")
+      new TestSender(hasher,URI("http://www.google.com"),"4e13de")
     }
   }
 }
@@ -47,7 +47,7 @@ class TestURIHasher extends BaseTest {
 class TestSender(hasher:URIHasher,message:URIHashMessage,expectedReturn:String) extends Actor with ShouldMatchers {
   def act() {
     hasher ! message
-    receive {
+    receiveWithin(1000) {
       case hash:String => {
         hash should equal(expectedReturn)
       }
