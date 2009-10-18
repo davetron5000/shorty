@@ -2,6 +2,9 @@ package shorty.db
 
 import java.io._
 
+/** The lowest-level interface to the key/value store.
+  * This is not thread-safe.
+  */
 class DB(file:File) extends Logs {
   private var keyValue:Map[String,String] = initFromFile
 
