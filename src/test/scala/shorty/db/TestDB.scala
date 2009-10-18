@@ -1,5 +1,7 @@
 package shorty.db
 
+import java.io._
+
 import shorty._
 
 class TestDB extends BaseTest {
@@ -7,10 +9,19 @@ class TestDB extends BaseTest {
   var database:DB = _
 
   override def beforeEach = {
-    database = new DB()
+    val (file,db) = newDB
+    database = db
   }
 
   override def afterEach = { 
+  }
+
+  private def newDB = {
+    val tmpFile = File.createTempFile(getClass.getName,"db")
+    tmpFile.deleteOnExit
+
+    val diskDB = new DB(tmpFile)
+    (tmpFile,diskDB)
   }
 
   describe("DB") {
@@ -27,6 +38,15 @@ class TestDB extends BaseTest {
       database.get("somekey") should equal(Some("somevalue"))
       database.size should equal(1)
       database.get("nevertobeused") should equal(None)
+    }
+    it ("should persist to disk") {
+      var (tmpFile,diskDB) = newDB
+
+      diskDB.put("somekey","somevalue")
+
+      diskDB = new DB(tmpFile)
+      diskDB.get("somekey") should equal(Some("somevalue"))
+      diskDB.size should equal(1)
     }
   }
 
