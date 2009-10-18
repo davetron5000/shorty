@@ -17,5 +17,10 @@ class TestDB extends BaseTest {
     it ("should initially be empty") {
       database.size should equal(0)
     }
+
+    it ("should return None on get of unknown key") {
+      database.get("nevertobeused") should equal(None)
+    }
   }
+
 }

@@ -1,5 +1,6 @@
 package shorty.db
 
 class DB {
-  val size = 0
+  def size = 0
+  def get(key:String):Option[String] = None
 }
