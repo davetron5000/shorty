@@ -21,6 +21,11 @@ class TestDB extends BaseTest {
     it ("should return None on get of unknown key") {
       database.get("nevertobeused") should equal(None)
     }
+
+    it ("should return a get when it was put") {
+      database.put("somekey","somevalue")
+      database.get("somekey") should equal(Some("somevalue"))
+    }
   }
 
 }
