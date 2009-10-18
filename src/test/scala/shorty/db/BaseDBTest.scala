@@ -17,6 +17,7 @@ abstract class BaseDBTest extends BaseTest {
   }
 
   override def afterEach = { 
+    database.close
   }
 
   protected def newDB:(File,DB)
@@ -42,10 +43,12 @@ abstract class BaseDBTest extends BaseTest {
       var (tmpFile,diskDB) = newDB
 
       diskDB.put("somekey","somevalue")
+      diskDB.close
 
       diskDB = newDB(tmpFile)
       diskDB.get("somekey") should equal(Some("somevalue"))
       diskDB.size should equal(1)
+      diskDB.close
     }
   }
 
