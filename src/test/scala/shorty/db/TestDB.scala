@@ -25,6 +25,8 @@ class TestDB extends BaseTest {
     it ("should return a get when it was put") {
       database.put("somekey","somevalue")
       database.get("somekey") should equal(Some("somevalue"))
+      database.size should equal(1)
+      database.get("nevertobeused") should equal(None)
     }
   }
 
