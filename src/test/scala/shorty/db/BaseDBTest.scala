@@ -38,19 +38,6 @@ abstract class BaseDBTest extends BaseTest {
       database.get("nevertobeused") should equal(None)
     }
 
-    it ("should deal with a non-existent file") {
-      var (tmpFile,diskDB) = newDB
-      diskDB.put("key","value")
-      tmpFile.delete
-      diskDB = newDB(tmpFile)
-      diskDB.size should equal(0)
-
-      tmpFile.delete
-      diskDB.put("key","value")
-      diskDB.size should equal(1)
-      diskDB = newDB(tmpFile)
-      diskDB.size should equal(1)
-    }
     it ("should persist to disk") {
       var (tmpFile,diskDB) = newDB
 
