@@ -16,13 +16,13 @@ class TestDB extends BaseTest {
   override def afterEach = { 
   }
 
-  private def newDB = {
+  private def newDB:(File,DB) = {
     val tmpFile = File.createTempFile(getClass.getName,"db")
     tmpFile.deleteOnExit
-
-    val diskDB = new DB(tmpFile)
-    (tmpFile,diskDB)
+    (tmpFile,newDB(tmpFile))
   }
+
+  private def newDB(file:File) = new DB(file)
 
   describe("DB") {
     it ("should initially be empty") {
@@ -44,7 +44,7 @@ class TestDB extends BaseTest {
 
       diskDB.put("somekey","somevalue")
 
-      diskDB = new DB(tmpFile)
+      diskDB = newDB(tmpFile)
       diskDB.get("somekey") should equal(Some("somevalue"))
       diskDB.size should equal(1)
     }
