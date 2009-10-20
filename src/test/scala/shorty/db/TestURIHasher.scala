@@ -46,10 +46,13 @@ class TestURIHasher extends BaseTest {
       hasher.start
       var future = hasher !!  GetURI("4e13de")
       future() should equal(None)
+
       future = hasher !! HashURI("http://www.google.com")
       future() should equal(Some("738ddf"))
+
       future = hasher !! GetURI("738ddf")
       future() should equal (Some("http://www.google.com"))
+
       future = hasher !!  GetURI("blah")
       future() should equal(None)
     }

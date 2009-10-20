@@ -39,15 +39,8 @@ class URIHasher(database:DB) extends Actor with Logs {
     }
   }
 
-  private def store(uri:String) = {
-    val h = hash(uri)
-    database += (h -> uri)
-    Some(h)
-  }
-
-  private def load(h:String) = {
-    database(h)
-  }
+  private def store(uri:String) = Some((database += hash(uri))._1)
+  private def load(h:String) = database(h)
 
   private def hash(s:String) = {
     debug("Asked to hash " + s)
@@ -58,6 +51,6 @@ class URIHasher(database:DB) extends Actor with Logs {
       case x:String => x.substring(0,6)
     }
     debug("Hash is " + result)
-    result
+    (result,s)
   }
 }
