@@ -30,8 +30,10 @@ class DB(env:Environment,name:String) extends Logs {
     }
   }
 
-  def put(key:String, value:String) = {
-    database.put(null,key,value)
+  def put(key:String, value:String):Unit = put(key -> value)
+
+  def put(entry:(String,String)) = {
+    database.put(null,entry._1,entry._2)
   }
 
   def close = {

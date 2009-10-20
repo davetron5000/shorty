@@ -42,6 +42,12 @@ class TestDB extends BaseTest {
       database.size should equal(1)
       database.get("nevertobeused") should equal(None)
     }
+    it ("should return allow a put via arrow operator") {
+      database.put("somekey" -> "somevalue")
+      database.get("somekey") should equal(Some("somevalue"))
+      database.size should equal(1)
+      database.get("nevertobeused") should equal(None)
+    }
 
     it ("should allow updating a value") {
       database.put("somekey","somevalue")
