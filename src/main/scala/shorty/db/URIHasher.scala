@@ -4,6 +4,7 @@ import java.security._
 import java.math._
 import scala.actors._
 
+/** Base of messages receivable by URIHasher */
 sealed abstract class URIHashMessage;
 
 /** Hashes the given URI and stores it.
@@ -16,11 +17,19 @@ case class HashURI(val uri:String) extends URIHashMessage;
 case class GetURI(val hash:String) extends URIHashMessage;
 
 /**
-  * This hashes URIs to 6-character strings that we store
+  * This hashes URIs to short character strings that we store
   * in a database.  This works as an Actor and receives 
   * messages that subclass URIHashMessage.
+  *
+  * @param database the DB instance to use to store the hashed urls
+  * @param hasher a function that, given a URL, hashes it, and returns the hashed value. This function need
+  * not trim or manipulate the string, just ensure it is in ASCII.
+  *
+  * @see shorty.db.URIHashMessage
+  * @see shorty.db.GetURI
+  * @see shorty.db.HashURI
   */
-class URIHasher(database:DB, hasher: (String) => (String,String)) extends Actor with Logs {
+class URIHasher(database:DB, hasher: (String) => String) extends Actor with Logs {
 
   def size = database.size
   def close = database.close
@@ -38,27 +47,32 @@ class URIHasher(database:DB, hasher: (String) => (String,String)) extends Actor 
     }
   }
 
-  private def store(uri:String) = Some((database += hasher(uri))._1)
+  private def store(uri:String) = Some((database += trim(hasher(uri)) -> uri)._1)
   private def load(h:String) = database(h)
+
+  private val LENGTH = 6 
+  private def trim(s:String) = s match {
+    case x if x.length < LENGTH => x
+    case x => x.substring(0,LENGTH)
+  }
 }
 
+/**
+  * Factory for creating URIHasher instances 
+  */
 object URIHasher {
   def apply(database:DB) = new URIHasher(database,new MessageDigestHasher("sha"))
-  def apply(database:DB,hasher:(String) => (String,String)) = new URIHasher(database,hasher)
+  def apply(database:DB,hasher:(String) => String) = new URIHasher(database,hasher)
 }
 
-abstract class Hasher extends Function1[String,(String,String)]
-
-class MessageDigestHasher(digestName:String) extends Hasher with Logs {
+/**
+  * A hash function that uses a message digest from the <tt>java.security</tt> package
+  */
+class MessageDigestHasher(digestName:String) extends Function1[String,String] with Logs {
   def apply(s:String) = {
     debug("Asked to hash " + s)
     val digest = MessageDigest.getInstance(digestName)
     digest.update(s.getBytes())
-    val result = new BigInteger(1,digest.digest()).toString(16) match {
-      case x:String if x.length < 6 => x
-      case x:String => x.substring(0,6)
-    }
-    debug("Hash is " + result)
-    (result,s)
+    new BigInteger(1,digest.digest()).toString(16)
   }
 }
