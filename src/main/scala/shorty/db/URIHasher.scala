@@ -41,12 +41,12 @@ class URIHasher(database:DB) extends Actor with Logs {
 
   private def store(uri:String) = {
     val h = hash(uri)
-    database.put(h,uri)
+    database += (h -> uri)
     Some(h)
   }
 
   private def load(h:String) = {
-    database.get(h)
+    database(h)
   }
 
   private def hash(s:String) = {

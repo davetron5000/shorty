@@ -33,37 +33,31 @@ class TestDB extends BaseTest {
     }
 
     it ("should return None on get of unknown key") {
-      database.get("nevertobeused") should equal(None)
+      database("nevertobeused") should equal(None)
     }
 
     it ("should return a get when it was put") {
-      database.put("somekey","somevalue")
-      database.get("somekey") should equal(Some("somevalue"))
+      database += ("somekey" -> "somevalue")
+      database("somekey") should equal(Some("somevalue"))
       database.size should equal(1)
-      database.get("nevertobeused") should equal(None)
-    }
-    it ("should return allow a put via arrow operator") {
-      database.put("somekey" -> "somevalue")
-      database.get("somekey") should equal(Some("somevalue"))
-      database.size should equal(1)
-      database.get("nevertobeused") should equal(None)
+      database("nevertobeused") should equal(None)
     }
 
     it ("should allow updating a value") {
-      database.put("somekey","somevalue")
-      database.put("somekey","some other value")
-      database.get("somekey") should equal(Some("some other value"))
+      database += ("somekey" -> "somevalue")
+      database += ("somekey" -> "some other value")
+      database("somekey") should equal(Some("some other value"))
     }
 
 
     it ("should persist to disk") {
       var (tmpFile,diskDB) = newDB
 
-      diskDB.put("somekey","somevalue")
+      diskDB += ("somekey" -> "somevalue")
       diskDB.close
 
       diskDB = newDB(tmpFile)
-      diskDB.get("somekey") should equal(Some("somevalue"))
+      diskDB("somekey") should equal(Some("somevalue"))
       diskDB.size should equal(1)
       diskDB.close
     }
