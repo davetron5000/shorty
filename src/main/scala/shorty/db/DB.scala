@@ -20,6 +20,7 @@ class DB(env:Environment,name:String) extends Logs {
   def size = database.count()
 
   def apply(key:String):Option[String] = {
+    debug("Looking up key " + key)
     var value:DatabaseEntry = new DatabaseEntry
     database.get(null,key,value,null) match {
       case OperationStatus.SUCCESS => Some(value)
@@ -31,7 +32,9 @@ class DB(env:Environment,name:String) extends Logs {
   }
 
   def +=(entry:(String,String)) = {
+    debug("Storing " + entry)
     database.put(null,entry._1,entry._2)
+    entry
   }
 
   def close = {
