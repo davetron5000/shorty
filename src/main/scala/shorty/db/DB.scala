@@ -48,8 +48,13 @@ class DB(env:Environment,name:String) extends Logs {
     entry
   }
 
+  private var isClosed = false
+
+  def closed = isClosed
+
   /** close the database safely */
   def close = {
+    isClosed = true
     database.close()
     env.close()
   }

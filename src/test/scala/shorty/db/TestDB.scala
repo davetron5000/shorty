@@ -49,7 +49,6 @@ class TestDB extends BaseTest {
       database("somekey") should equal(Some("some other value"))
     }
 
-
     it ("should persist to disk") {
       var (tmpFile,diskDB) = newDB
 
@@ -60,6 +59,15 @@ class TestDB extends BaseTest {
       diskDB("somekey") should equal(Some("somevalue"))
       diskDB.size should equal(1)
       diskDB.close
+    }
+
+    it ("should know when it's closed") {
+      var (tmpFile,diskDB) = newDB
+
+      diskDB += ("somekey" -> "somevalue")
+      diskDB.closed should equal(false)
+      diskDB.close
+      diskDB.closed should equal(true)
     }
   }
 }
