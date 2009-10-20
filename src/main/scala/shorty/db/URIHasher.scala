@@ -12,6 +12,7 @@ sealed abstract class URIHashMessage;
   */
 case class HashURI(val uri:String) extends URIHashMessage;
 
+/** Retrieves the URI with the given hash as an Option[String] */
 case class GetURI(val hash:String) extends URIHashMessage;
 
 /**
@@ -19,9 +20,7 @@ case class GetURI(val hash:String) extends URIHashMessage;
   * in a database.  This works as an Actor and receives 
   * messages that subclass URIHashMessage.
   */
-class URIHasher(database:DB) extends Actor with Logs {
-
-  var digestName:String = "sha"
+class URIHasher(database:DB, hasher: (String) => (String,String)) extends Actor with Logs {
 
   def size = database.size
   def close = database.close
@@ -39,10 +38,19 @@ class URIHasher(database:DB) extends Actor with Logs {
     }
   }
 
-  private def store(uri:String) = Some((database += hash(uri))._1)
+  private def store(uri:String) = Some((database += hasher(uri))._1)
   private def load(h:String) = database(h)
+}
 
-  private def hash(s:String) = {
+object URIHasher {
+  def apply(database:DB) = new URIHasher(database,new MessageDigestHasher("sha"))
+  def apply(database:DB,hasher:(String) => (String,String)) = new URIHasher(database,hasher)
+}
+
+abstract class Hasher extends Function1[String,(String,String)]
+
+class MessageDigestHasher(digestName:String) extends Hasher with Logs {
+  def apply(s:String) = {
     debug("Asked to hash " + s)
     val digest = MessageDigest.getInstance(digestName)
     digest.update(s.getBytes())

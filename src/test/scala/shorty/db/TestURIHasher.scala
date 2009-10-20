@@ -16,7 +16,7 @@ class TestURIHasher extends BaseTest {
 
   override def beforeEach = {
     val (file,db) = newDB
-    hasher = new URIHasher(db)
+    hasher = URIHasher(db)
   }
 
   override def afterEach = { 
