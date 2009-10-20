@@ -31,15 +31,23 @@ case class GetURI(val hash:String) extends URIHashMessage;
   */
 class URIHasher(database:DB, hasher: (String) => String) extends Actor with Logs {
 
+  /** Get the number of URIs hashed */
   def size = database.size
+  /** Close this hasher; this object is useless after this call and
+    * all messages sent will get None in response 
+    */
   def close = database.close
 
   def act() {
     while(true) {
       receive {
-        case HashURI(uri) => sender ! store(uri)
-        case GetURI(hash) => sender ! load(hash)
-        case x:Any => {
+        case HashURI(uri) if !database.closed => sender ! store(uri)
+        case GetURI(hash) if !database.closed => sender ! load(hash)
+        case x:URIHashMessage => {
+          warn("Database has been closed")
+          sender ! None
+        }
+        case x => {
           warn("No clue how to deal with a message " + x.toString)
           sender ! None
         }
