@@ -39,18 +39,20 @@ class TestURIHasher extends BaseTest {
     }
     it ("should return the hash for a URI") {
       hasher.start
-      new TestSender(hasher,URI("http://www.google.com"),"4e13de")
+      val future = hasher !! HashURI("http://www.google.com")
+      future() should equal (Some("738ddf"))
+    }
+    it ("should not return a URI for an unknown hash") {
+      hasher.start
+      var future = hasher !!  GetURI("4e13de")
+      future() should equal(None)
+      future = hasher !! HashURI("http://www.google.com")
+      future() should equal(Some("738ddf"))
+      future = hasher !! GetURI("738ddf")
+      future() should equal (Some("http://www.google.com"))
+      future = hasher !!  GetURI("blah")
+      future() should equal(None)
     }
   }
 }
 
-class TestSender(hasher:URIHasher,message:URIHashMessage,expectedReturn:String) extends Actor with ShouldMatchers {
-  def act() {
-    hasher ! message
-    receiveWithin(1000) {
-      case hash:String => {
-        hash should equal(expectedReturn)
-      }
-    }
-  }
-}
