@@ -4,8 +4,12 @@ import java.io._
 
 import com.sleepycat.je._
 
-/** Berkeley DB, use the DB object to create instances. 
+/** Access to a Berkeley DB. 
   * This is a low-level key/value interface.
+  * Use the DB object to create instances. 
+  * @param env The Berkeley DB Environment object to use to create a database.
+  * @param name the name of the database.  If this exists in <tt>env</tt>, it will be loaded.
+  * Otherwise, it will be created.
   */
 class DB(env:Environment,name:String) extends Logs {
   val database = {
@@ -17,8 +21,10 @@ class DB(env:Environment,name:String) extends Logs {
   private implicit def stringToDatabaseEntry(s:String) = new DatabaseEntry(s.getBytes())
   private implicit def databaseEntryToString(d:DatabaseEntry) = new String(d.getData)
 
+  /** Get the number of items in this DB */
   def size = database.count()
 
+  /** Retrive the stored item for the key, or None if the key isn't mapped. */
   def apply(key:String):Option[String] = {
     debug("Looking up key " + key)
     var value:DatabaseEntry = new DatabaseEntry
@@ -31,12 +37,18 @@ class DB(env:Environment,name:String) extends Logs {
     }
   }
 
+  /** Add a new mapped key/value pair, as a tuple.
+    * <pre>
+    * someDatabase += ("key" -&gt; "value")
+    * </pre>
+    */
   def +=(entry:(String,String)) = {
     debug("Storing " + entry)
     database.put(null,entry._1,entry._2)
     entry
   }
 
+  /** close the database safely */
   def close = {
     database.close()
     env.close()
