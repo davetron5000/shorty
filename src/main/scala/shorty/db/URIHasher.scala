@@ -38,13 +38,23 @@ class URIHasher(database:DB, hasher: (String) => String) extends Actor with Logs
     */
   def close = database.close
 
+  /**
+    * True if this URIHasher is no longer running
+    */
+  def closed = database.closed
+
   def act() {
     while(true) {
       receive {
-        case HashURI(uri) if !database.closed => sender ! store(uri)
-        case GetURI(hash) if !database.closed => sender ! load(hash)
+        case HashURI(uri) if !closed => sender ! store(uri)
+        case GetURI(hash) if !closed => sender ! load(hash)
         case x:URIHashMessage => {
           warn("Database has been closed")
+          sender ! None
+        }
+        case Exit => {
+          info("Exiting and closing URIHasher")
+          close
           sender ! None
         }
         case x => {

@@ -64,6 +64,13 @@ class TestURIHasher extends BaseTest {
       val future = myHasher !! HashURI("http://www.yahoo.com")
       future() should equal(None)
     }
+    it ("should not respond with None if it was exited") {
+      val (file,db) = newDB
+      val myHasher = URIHasher(db)
+      myHasher.start
+      myHasher !? Exit
+      myHasher.closed should equal(true)
+    }
   }
 }
 
