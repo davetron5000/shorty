@@ -21,6 +21,13 @@ case class GetURI(val hash:String) extends URIHashMessage;
   * in a database.  This works as an Actor and receives 
   * messages that subclass URIHashMessage.
   *
+  * <pre>
+  * val hasher = URIHasher(db)
+  * hasher.start
+  * val hash = hasher !! HashURI("http://www.google.com")
+  * println("The hashed value is " + hash())
+  * </pre>
+  *
   * @param database the DB instance to use to store the hashed urls
   * @param hasher a function that, given a URL, hashes it, and returns the hashed value. This function need
   * not trim or manipulate the string, just ensure it is in ASCII.

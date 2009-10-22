@@ -5,6 +5,16 @@ import org.apache.log4j._
 /** Wraps log4j in a trait that not only makes it easy to log things
   * but also uses lazy evaluation for log messages -- no need to 
   * wrap them in an if statement for expensive messages
+  *
+  * <pre>
+  * class Foo extends Logs {
+  *   def doit = {
+  *     debug("This is a " + very.complicated + " log message")
+  *     fatal(someException)
+  *     // etc.
+  *   }
+  * }
+  * </pre>
   */
 trait Logs {
   private[this] val logger = Logger.getLogger(getClass().getName());
