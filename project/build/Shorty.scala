@@ -10,7 +10,7 @@ class Shorty(info: ProjectInfo) extends DefaultWebProject(info) {
   val jwebunit = "net.sourceforge.jwebunit" % "jwebunit-htmlunit-plugin" % "1.5" % "test->default"
   val log4j = "log4j" % "log4j" % "1.2.13" % "provided->default" 
   val easymockclass = "easymock" % "easymockclassextension" % "2.2" % "test->default"
-  val berkeleydb = "com.sleepycat" % "je" % "3.3.87"
+  val berkeleydb = "com.sleepycat" % "je" % "4.0.71"
 
   override def jettyContextPath = "/s"
 
