@@ -9,47 +9,42 @@ import javax.servlet.http._
 
 class TestRepresentationParser extends BaseTest {
 
+  var request:HttpServletRequest = _;
+  var parser:RepresentationParser = _;
+
+  override def beforeEach() = {
+      request = createMock(classOf[HttpServletRequest])
+      parser = new AnyRef with RepresentationParser
+  }
+
   describe("RepresentationParser") {
     it ("should be case insensitive") {
-      val request = createMock(classOf[HttpServletRequest])
-      val parser = new AnyRef with RepresentationParser
-
-      val enumeration = expectOnEnum(parser,request,List("TEXT/XML"))
-
-      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null).anyTimes()
-      replay(request)
-      replay(enumeration)
-
-      val t = parser.determineRepresentation(request)
-      t should equal (Some("text/xml"))
+      runTest(List("TEXT/XML"),null,"text/xml")
     }
 
     it ("should default to HTML") {
-      val request = createMock(classOf[HttpServletRequest])
-      val parser = new AnyRef with RepresentationParser
+      runTest(List(),null,"text/html")
+    }
 
-      val enumeration = expectOnEnum(parser,request,List())
-
-      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null).anyTimes() 
-      replay(request)
-      replay(enumeration)
-
-      val t = parser.determineRepresentation(request)
-      t should equal (Some("text/html"))
+    it ("should favor HTML when it gets more than one") {
+      // not totally sure this actually works
+      runTest(List("text/xml", "text/xml", "text/xml","text/html","image/png"),null,"text/html")
     }
 
     it ("should be favor accept header") {
-      val request = createMock(classOf[HttpServletRequest])
-      val parser = new AnyRef with RepresentationParser
+      runTest(List("text/xml"),"application/json","text/xml")
+    }
+  }
 
-      val enumeration = expectOnEnum(parser,request,List("text/xml"))
-      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn("application/json").anyTimes()
+  private def runTest(headers:List[String],typeParam:String,expected:String) = {
+      val enumeration = expectOnEnum(parser,request,headers)
+
+      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(typeParam).anyTimes()
       replay(request)
       replay(enumeration)
 
       val t = parser.determineRepresentation(request)
-      t should equal (Some("text/xml"))
-    }
+      t should equal (Some(expected))
   }
 
   private def expectOnEnum(parser: RepresentationParser, request:HttpServletRequest, mimeTypes:List[String]):Enumeration[String] = {
