@@ -23,6 +23,11 @@ trait Logs {
 
   def debug(message: => String) = if (logger.isEnabledFor(DEBUG)) logger.debug(message)
   def debug(message: => String, ex:Throwable) = if (logger.isEnabledFor(DEBUG)) logger.debug(message,ex)
+  def debugValue[T](valueName: String, value: => T):T = {
+    val result:T = value
+    debug(valueName + " == " + result.toString)
+    result
+  }
 
   def info(message: => String) = if (logger.isEnabledFor(INFO)) logger.info(message)
   def info(message: => String, ex:Throwable) = if (logger.isEnabledFor(INFO)) logger.info(message,ex)
