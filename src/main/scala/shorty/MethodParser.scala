@@ -2,6 +2,13 @@ package shorty
 
 import javax.servlet.http._
 
+abstract sealed class HTTPMethod
+
+case object GET extends HTTPMethod
+case object PUT extends HTTPMethod
+case object POST extends HTTPMethod
+case object DELETE extends HTTPMethod
+
 trait MethodParser {
 
   val METHOD_PARAM = "_method";
@@ -23,7 +30,13 @@ trait MethodParser {
         request.getHeader(METHOD_HEADER)
       else 
         request.getMethod
-    methodHelper.toLowerCase
+    methodHelper.toLowerCase match {
+      case "get" => GET
+      case "put" => PUT
+      case "post" => POST
+      case "delete" => DELETE
+      case x => throw new IllegalArgumentException("Method " + x.toString + " is not known")
+    }
   }
 
 
