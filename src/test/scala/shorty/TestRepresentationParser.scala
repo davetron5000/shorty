@@ -44,7 +44,7 @@ class TestRepresentationParser extends BaseTest {
       replay(enumeration)
 
       val t = parser.determineRepresentation(request)
-      t should equal (Some(expected))
+      t should equal (expected)
   }
 
   private def expectOnEnum(parser: RepresentationParser, request:HttpServletRequest, mimeTypes:List[String]):Enumeration[String] = {

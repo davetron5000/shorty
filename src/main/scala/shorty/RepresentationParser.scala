@@ -16,12 +16,16 @@ trait RepresentationParser extends Logs {
 
   val knownTypes = List( DEFAULT_TYPE, "text/xml","application/json")
 
+  /**
+    * given a request, returns the representation (mime type) to be
+    * used
+    */
   def determineRepresentation(request:HttpServletRequest) = {
     fromHeader(request) match {
-      case Some(x) => Some(x)
+      case Some(x) => x
       case None => fromParam(request) match {
-        case Some(y) => Some(y)
-        case None => Some(DEFAULT_TYPE)
+        case Some(y) => y
+        case None => DEFAULT_TYPE
       }
     }
   }
