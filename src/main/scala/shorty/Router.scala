@@ -1,14 +1,16 @@
 package shorty
 
+/**
+  * Routes requests based on path and method
+  */
 trait Router {
-  def route(method:String, path:List[String]) = {
-    (method,path) match {
-      case ("get",Nil) => Some("get all")
-      case ("get",x :: rest) => Some("get " + x)
-      case ("post",Nil) => Some("post new")
-      case ("put",x :: rest) => Some("create new named " + x)
-      case ("delete",x :: rest) => Some("delete existing named " + x)
-      case _ => None
+  /**
+    * returns a Controller based upon the method and path
+    */
+  def route(path:List[String]):Option[Controller] = {
+    path match {
+      case Nil => Some(new AllUrlsController)
+      case x :: rest => Some(new OneUrlController(x))
     }
   }
 }

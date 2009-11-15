@@ -17,8 +17,8 @@ class ShortyServlet extends HttpServlet
     val method = determineMethod(request)
       val path = getPath(request)
       val repType = determineRepresentation(request)
-      route(method,path) match {
-        case Some(r) => response.getWriter.write(r + " as an " + repType)
+      route(path) match {
+        case Some(controller) => response.getWriter.write(controller.getClass.toString)
         case None => response.sendError(405)
     }
   }
