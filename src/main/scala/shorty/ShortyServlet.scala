@@ -15,15 +15,11 @@ class ShortyServlet extends HttpServlet
 
   protected override def service(request:HttpServletRequest, response:HttpServletResponse) = {
     val method = determineMethod(request)
-    val path = getPath(request)
-    determineRepresentation(request) match {
-      case Some(x) => {
-        route(method,path) match {
-          case Some(r) => response.getWriter.write(r + " as an " + x)
-          case None => response.sendError(405)
-        }
-      }
-      case None => response.sendError(406)
+      val path = getPath(request)
+      val repType = determineRepresentation(request)
+      route(method,path) match {
+      case Some(r) => response.getWriter.write(r + " as an " + repType)
+      case None => response.sendError(405)
     }
   }
 

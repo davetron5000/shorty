@@ -4,11 +4,17 @@ import java.util.Enumeration
 
 import javax.servlet.http._
 
+/**
+  * Parses the representation from the request.
+  * This could be either an explicit parameter or the
+  * Accept: header
+  */
 trait RepresentationParser extends Logs {
   val ACCEPT_HEADER = "Accept"
   val TYPE_PARAM = "_type"
+  val DEFAULT_TYPE = "text/html"
 
-  val knownTypes = List( "text/html","text/xml","application/json")
+  val knownTypes = List( DEFAULT_TYPE, "text/xml","application/json")
 
   def determineRepresentation(request:HttpServletRequest) = {
     val param = request.getParameter(TYPE_PARAM)
@@ -17,7 +23,7 @@ trait RepresentationParser extends Logs {
         Some(request.getParameter(TYPE_PARAM).toLowerCase)
       }
       else {
-        None
+        Some(DEFAULT_TYPE)
       }
     }
     else {
@@ -25,12 +31,12 @@ trait RepresentationParser extends Logs {
       val inter = for( t <- knownTypes; r <- requestedTypes if (t.equalsIgnoreCase(r))) yield t
       inter match {
         case x :: rest => Some(x.toLowerCase)
-        case _ => None
+        case _ => Some(DEFAULT_TYPE)
       }
     }
   }
 
-  def requested(enumeration:Enumeration[_],l:List[String]):List[String] = {
+  private def requested(enumeration:Enumeration[_],l:List[String]):List[String] = {
     if (enumeration.hasMoreElements) {
       val values = enumeration.nextElement.asInstanceOf[String]
       debug("Got more; so far " + l.toString)
