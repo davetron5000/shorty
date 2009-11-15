@@ -1,6 +1,6 @@
 package shorty
 
-class TestAllUrlsController extends BaseTest {
+class TestAllUrlsController extends BaseControllerTest {
 
   var controller:AllUrlsController = _
 
@@ -21,11 +21,4 @@ class TestAllUrlsController extends BaseTest {
       shouldNotRespond(controller.get)
     }
   }
-
-  private def shouldNotRespond(result: Either[(Int,String),String]) = {
-    result.isLeft should equal (true)
-    result.isRight should equal (false)
-    result.left.get._1 should equal (405)
-  }
-
 }
