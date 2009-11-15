@@ -14,14 +14,14 @@ class TestRepresentationParser extends BaseTest {
       val request = createMock(classOf[HttpServletRequest])
       val parser = new AnyRef with RepresentationParser
 
-      val enumeration = expectOnEnum(parser,request,"TEXT/HTML")
+      val enumeration = expectOnEnum(parser,request,List("TEXT/XML"))
 
-      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null)
+      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null).anyTimes()
       replay(request)
       replay(enumeration)
 
       val t = parser.determineRepresentation(request)
-      t should equal (Some("text/html"))
+      t should equal (Some("text/xml"))
     }
 
     it ("should default to HTML") {
@@ -30,29 +30,28 @@ class TestRepresentationParser extends BaseTest {
 
       val enumeration = expectOnEnum(parser,request,List())
 
-      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null)  
-
+      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn(null).anyTimes() 
       replay(request)
+      replay(enumeration)
 
       val t = parser.determineRepresentation(request)
       t should equal (Some("text/html"))
     }
-    /*
 
     it ("should be favor accept header") {
       val request = createMock(classOf[HttpServletRequest])
       val parser = new AnyRef with RepresentationParser
 
-      EasyMock.expect(request.getHeaders(parser.ACCEPT_HEADER)).andReturn(new EasyEnum(List("TEXT/xml")))
+      val enumeration = expectOnEnum(parser,request,List("text/xml"))
+      EasyMock.expect(request.getParameter(parser.TYPE_PARAM)).andReturn("application/json").anyTimes()
       replay(request)
+      replay(enumeration)
 
       val t = parser.determineRepresentation(request)
-      t should equal ("text/xml")
+      t should equal (Some("text/xml"))
     }
-    */
   }
 
-  private def expectOnEnum(parser: RepresentationParser, request:HttpServletRequest, mimeType:String):Enumeration[String] = expectOnEnum(parser,request,List(mimeType))
   private def expectOnEnum(parser: RepresentationParser, request:HttpServletRequest, mimeTypes:List[String]):Enumeration[String] = {
       val enumeration = createMock(classOf[java.util.Enumeration[String]])
 

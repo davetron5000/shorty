@@ -17,34 +17,48 @@ trait RepresentationParser extends Logs {
   val knownTypes = List( DEFAULT_TYPE, "text/xml","application/json")
 
   def determineRepresentation(request:HttpServletRequest) = {
+    fromHeader(request) match {
+      case Some(x) => Some(x)
+      case None => fromParam(request) match {
+        case Some(y) => Some(y)
+        case None => Some(DEFAULT_TYPE)
+      }
+    }
+  }
+
+  private def fromHeader(request:HttpServletRequest) = {
+    val requestedTypes = requested(request.getHeaders(ACCEPT_HEADER),Nil)
+      knownTypes.intersect(requestedTypes) match {
+        case x :: rest => {
+          debug("Found mime type " + x)
+          Some(x.toLowerCase)
+        }
+        case _ => {
+          debug("No intersection between " + knownTypes.toString + " and " + requestedTypes.toString)
+          None
+        }
+    }
+  }
+
+  private def fromParam(request:HttpServletRequest):Option[String] = {
     val param = request.getParameter(TYPE_PARAM)
     if (param != null) {
       if (knownTypes.contains(param) ) {
         Some(request.getParameter(TYPE_PARAM).toLowerCase)
       }
-      else {
-        Some(DEFAULT_TYPE)
-      }
     }
-    else {
-      val requestedTypes = requested(request.getHeaders(ACCEPT_HEADER),Nil)
-      val inter = for( t <- knownTypes; r <- requestedTypes if (t.equalsIgnoreCase(r))) yield t
-      inter match {
-        case x :: rest => Some(x.toLowerCase)
-        case _ => Some(DEFAULT_TYPE)
-      }
-    }
+    None
   }
 
-  private def requested(enumeration:Enumeration[_],l:List[String]):List[String] = {
-    if (enumeration.hasMoreElements) {
-      val values = enumeration.nextElement.asInstanceOf[String]
-      debug("Got more; so far " + l.toString)
-      requested(enumeration,values.split(",").toList ::: l)
+  private def requested(enumeration:Enumeration[_],list:List[String]):List[String] = {
+    if (!enumeration.hasMoreElements) {
+      debug("None left, returning " + list.toString)
+      list
     }
     else {
-      debug("None left, returning " + l.toString)
-      l
+      val values = enumeration.nextElement.asInstanceOf[String]
+      debug("Got more; so far " + list.toString)
+      requested(enumeration,values.split(",").toList.map( _.toLowerCase ) ::: list)
     }
   }
 }
