@@ -23,6 +23,7 @@ class ShortyServlet extends HttpServlet
     }
   }
 
+  /** gets the path as a list of elements, stripping off the annoying blank you get sometimes */
   private def getPath(request:HttpServletRequest) = request.getPathInfo.split("/").toList match {
     case "" :: rest => rest
     case x => x
