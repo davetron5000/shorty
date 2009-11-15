@@ -1,7 +1,6 @@
 package shorty
 
 import java.io._
-import java.util._
 
 import javax.servlet._
 import javax.servlet.http._
@@ -15,42 +14,41 @@ class ShortyServlet extends HttpServlet
   with Router 
   with RepresentationParser {
 
-  val DB_DIR_PARAM = "dbDir"
-
-  private var _uriHasher:URIHasher = _
-  override protected def uriHasher = _uriHasher
+  override protected def uriHasher = {
+    val hasher = getServletContext.getAttribute(ShortyServlet.URI_HASHER_ATTRIBUTE).asInstanceOf[URIHasher]
+    if (hasher == null) throw new ServletException(ShortyServlet.URI_HASHER_ATTRIBUTE + " wasn't set in servlet context!")
+      hasher
+  }
 
   override protected def service(request:HttpServletRequest, response:HttpServletResponse) = {
-    val method = determineMethod(request)
       val path = getPath(request)
       val repType = determineRepresentation(request)
       route(path) match {
-        case Some(controller) => response.getWriter.write(controller.getClass.toString)
+        case Some(controller) => {
+          val result = determineMethod(request) match {
+            case GET => controller.get(params(request))
+            case PUT => controller.put(params(request))
+            case POST => controller.post(params(request))
+            case DELETE => controller.delete(params(request))
+          }
+          result match {
+            case Left((httpError,message)) => response.sendError(httpError,message)
+            case Right(url) => response.getWriter.println(url)
+          }
+        }
         case None => response.sendError(405)
     }
   }
 
-  override def init() = {
-    val dirName = getServletConfig.getInitParameter(DB_DIR_PARAM)
-    if (dirName != null) {
-      val dir = new File(dirName)
-      if (dir.exists()) {
-        if (dir.isDirectory()) {
-          val hasher = URIHasher(DB(dir))
-          hasher.start
-          _uriHasher = hasher
-        }
-        else {
-          throw new ServletException(dirName + " is not a directory")
-        }
-      }
-      else {
-        throw new ServletException(dirName + " doesn't exist")
-      }
+  /** Parse the params from the request and return as a Scala map */
+  private def params(request:HttpServletRequest) = {
+    val e:java.util.Enumeration[_] = request.getParameterNames
+    var map:Map[String,String] = Map.empty
+    while (e.hasMoreElements) {
+      val name = e.nextElement.asInstanceOf[String]
+      map = map + ((name,request.getParameter(name)))
     }
-    else {
-      throw new ServletException("You must supply a value for " + DB_DIR_PARAM)
-    }
+    map
   }
 
   /** gets the path as a list of elements, stripping off the annoying blank you get sometimes */
@@ -61,3 +59,7 @@ class ShortyServlet extends HttpServlet
 
 }
 
+object ShortyServlet {
+  val DB_DIR_PARAM = "dbDir"
+  val URI_HASHER_ATTRIBUTE = "uriHasher"
+}
