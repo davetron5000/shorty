@@ -13,7 +13,7 @@ trait Router {
   def route(path:List[String]):Option[Controller] = {
     path match {
       case Nil => Some(new AllUrlsController(uriHasher))
-      case x :: rest => Some(new OneUrlController(x))
+      case x :: rest => Some(new OneUrlController(uriHasher,x))
     }
   }
 
