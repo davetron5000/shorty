@@ -77,7 +77,10 @@ object DB extends Logs {
     */
   def apply(dir:File, name:String) = {
     debug("Creating new DB " + name + " in " + dir)
-    if (!dir.exists()) dir.mkdirs()
+    if (!dir.exists()) {
+      info(dir.getAbsolutePath + " didnt exist, making it...")
+      dir.mkdirs()
+    }
 
     val envConfig:EnvironmentConfig = new EnvironmentConfig();
     envConfig.setTransactional(false);
