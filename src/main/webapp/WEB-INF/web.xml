@@ -5,7 +5,7 @@
   <display-name>Shorty</display-name>
   <context-param>
     <param-name>dbDir</param-name>
-    <param-value>shorty_db_dir</param-value>
+    <param-value>/home/webadmin/xn--dfi5d.ws/webapps/shorty_db_dir</param-value>
   </context-param>
   <listener>
     <listener-class>
