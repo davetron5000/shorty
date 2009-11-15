@@ -1,24 +1,42 @@
 package shorty
 
-class TestAllUrlsController extends BaseControllerTest {
+import java.io._
+
+import shorty.db._
+
+class TestAllUrlsController extends BaseControllerTest with Logs {
 
   var controller:AllUrlsController = _
+  var hasher:URIHasher = _
 
-  override def beforeEach() = controller = new AllUrlsController
+  override def beforeEach = {
+    val tmpFile = File.createTempFile(getClass.getName,"db")
+    tmpFile.delete
+    tmpFile.mkdirs
+    tmpFile.deleteOnExit
+    hasher = URIHasher(DB(tmpFile))
+    hasher.start
+    controller = new AllUrlsController(hasher)
+  }
+
+  override def afterEach = hasher.close
 
   describe("AllUrlsController") {
     it ("should respond to post") {
-      controller.post.isLeft should equal (false)
-      controller.post.isRight should equal (true)
+      val result = controller.post(Map("url" -> "http://www.google.com"))
+      debug(result.toString)
+      result.isLeft should equal (false)
+      result.isRight should equal (true)
+      result.right.get should equal ("738ddf")
     }
     it ("should not respond to get") {
-      shouldNotRespond(controller.get)
+      shouldNotRespond(controller.get(Map()))
     }
     it ("should not respond to put") {
-      shouldNotRespond(controller.get)
+      shouldNotRespond(controller.put(Map()))
     }
     it ("should not respond to delete") {
-      shouldNotRespond(controller.get)
+      shouldNotRespond(controller.delete(Map()))
     }
   }
 }
