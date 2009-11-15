@@ -8,9 +8,12 @@ trait MethodParser {
   val METHOD_HEADER = "X-HTTP-Method-Override";
 
   /**
-   * determines the request method.  The parameter takes most precedence,
+   * Determines the request method based up on the requests headers, parameters and the HTTP method.  
+   * The parameter takes most precedence,
    * followed by the header, followed by the HTTP request method.
-   * THis allows for tunnelling
+   * This allows for tunnelling.
+   * @param request the servlet request
+   * @return string representation of the HTTP request method, all lower case, never null
    */
   def determineMethod(request:HttpServletRequest) = {
     def methodHelper = 

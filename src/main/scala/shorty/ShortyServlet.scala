@@ -6,7 +6,7 @@ import java.util._
 import javax.servlet._
 import javax.servlet.http._
 
-/** Main entry point into the web framework */
+/** Main entry point into the app */
 class ShortyServlet extends HttpServlet 
   with Logs 
   with MethodParser 
@@ -18,8 +18,8 @@ class ShortyServlet extends HttpServlet
       val path = getPath(request)
       val repType = determineRepresentation(request)
       route(method,path) match {
-      case Some(r) => response.getWriter.write(r + " as an " + repType)
-      case None => response.sendError(405)
+        case Some(r) => response.getWriter.write(r + " as an " + repType)
+        case None => response.sendError(405)
     }
   }
 

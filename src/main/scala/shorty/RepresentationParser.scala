@@ -19,6 +19,7 @@ trait RepresentationParser extends Logs {
   /**
     * given a request, returns the representation (mime type) to be
     * used
+    * @return the name of the mime type, never null
     */
   def determineRepresentation(request:HttpServletRequest) = {
     fromHeader(request) match {
