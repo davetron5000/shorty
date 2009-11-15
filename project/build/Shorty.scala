@@ -14,11 +14,12 @@ class Shorty(info: ProjectInfo) extends DefaultWebProject(info) {
 
   override def jettyContextPath = "/s"
 
+  /*
   override def defaultTestTask(testOptions: => Seq[TestOption]) =
     jettyStop dependsOn {
       super.defaultTestTask(testOptions) dependsOn {
         jettyRestart
       }
     }
-
+    */
 }
