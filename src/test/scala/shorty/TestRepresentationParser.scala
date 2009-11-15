@@ -9,8 +9,8 @@ import javax.servlet.http._
 
 class TestRepresentationParser extends BaseTest {
 
-  var request:HttpServletRequest = _;
-  var parser:RepresentationParser = _;
+  var request:HttpServletRequest = _
+  var parser:RepresentationParser = _
 
   override def beforeEach() = {
       request = createMock(classOf[HttpServletRequest])
