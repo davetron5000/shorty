@@ -1,6 +1,4 @@
-Shorty is a url shortening application written in Scala.
-
-It's written in Scala because I wanted a to write a small, but functional, application in Scala.  Plus, I have <a href="http://&#10106;&#10144;.ws/">&#10106;&#10144;.ws/g/1</a> registered as my own personal url shortener.
+Shorty is a RESTful url shortening application written in Scala.
 
 # Building
 
@@ -9,18 +7,17 @@ It's written in Scala because I wanted a to write a small, but functional, appli
    * Full path to writable directory where you will store your database
    * the name of your host for shortening, 
    * secret key to keep others from using it
- * `./prod`
+ * `./prod # Copies your web.xml.prod to web.xml`
  * `sbt package`
- * on your deployment server
+ * on your deployment server, create the database directory
  * `scp package/shorty-1.0.war` to your J2EE container to deploy it
 
 # Using
 
- `POST` to `http://yourdomain.com/context/?url=URL_TO_SHORTEN&api=API_KEY`
-
-The result will be the shortened URL. A `GET` to this URL will redirect you.  If you `GET` using an `Accept:` header of `text/xml` or `application/json`, you will get
-XML or JSON instead.  You can also specify `_type` as a request parameter to override the `Accept:` header.  This should hopefully allow it to work with Tweetie as 
-my URL shortener of record.  
+ * `POST` to `http://yourdomain.com/context/?url=URL_TO_SHORTEN&api=API_KEY`
+   * Returns the shortened URL
+   * If you request `text/xml` or `application/json`, you will get an XML or JSON version
+   * Request alternate formats via the `Accept:` header, or via the `_type` request parameter
 
 # Why?
 
@@ -29,3 +26,11 @@ my URL shortener of record.
  * Wanted to write something that could use Scala actors
  * Wanted to learn SBT some
 
+# Conclusions
+
+ * Scala is a fun and concise language
+ * Bridging un-genericized classes (e.g. `java.util.Enumeration`) to Scala is painful
+ * ScalaTest is reasonably cool
+ * SBT is *so close* to being awesome, and is better than Maven, but still not that great
+ * J2EE packaging and deploying *sucks*
+ * Scala makes things so much easier than the Java equivalents.
