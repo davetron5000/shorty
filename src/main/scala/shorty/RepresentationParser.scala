@@ -22,9 +22,9 @@ trait RepresentationParser extends Logs {
     * @return the name of the mime type, never null
     */
   def determineRepresentation(request:HttpServletRequest) = {
-    fromHeader(request) match {
+    fromParam(request) match {
       case Some(x) => x
-      case None => fromParam(request) match {
+      case None => fromHeader(request) match {
         case Some(y) => y
         case None => DEFAULT_TYPE
       }
@@ -48,8 +48,8 @@ trait RepresentationParser extends Logs {
   private def fromParam(request:HttpServletRequest):Option[String] = {
     val param = request.getParameter(TYPE_PARAM)
     if (param != null) {
-      if (knownTypes.contains(param) ) {
-        Some(request.getParameter(TYPE_PARAM).toLowerCase)
+      if (knownTypes.contains(param.trim.toLowerCase) ) {
+        return Some(request.getParameter(TYPE_PARAM).trim.toLowerCase)
       }
     }
     None

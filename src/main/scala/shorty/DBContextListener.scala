@@ -36,6 +36,7 @@ class DBContextListener extends ServletContextListener {
 
   override def contextDestroyed(event:ServletContextEvent) = {
     event.getServletContext.log("Shutting down our hasher/DB")
-    uriHasher.close
+    if (uriHasher != null)
+      uriHasher.close
   }
 }

@@ -14,8 +14,8 @@ class AllUrlsController(hasher:URIHasher) extends Controller {
     debug("Post with url == " + params(URL_PARAM))
     // this form returns an Option, and we are expecting an Option inside that
     hasher.!?(WAIT_TIME,HashURI(params(URL_PARAM))) match {
-      case Some(Some(hash:String)) => new Right(hash)
-      case Some(None) => new Left((500,"Internal error from database"))
+      case Some(Some(hash:String)) => new Hash(hash)
+      case Some(None) => new Error(500,"Internal error from database")
       case None => timeout
     }
   }

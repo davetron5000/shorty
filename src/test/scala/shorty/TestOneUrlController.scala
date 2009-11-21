@@ -15,7 +15,7 @@ class TestOneUrlController extends BaseControllerTest with Logs {
     tmpFile.deleteOnExit
     hasher = URIHasher(DB(tmpFile))
     hasher.start
-    hasher ! HashURI("http://www.google.com")
+    hasher !? HashURI("http://www.google.com")
   }
 
   override def afterEach = hasher.close
@@ -24,17 +24,15 @@ class TestOneUrlController extends BaseControllerTest with Logs {
     it ("should respond to get for a URL that is known") {
       val controller = new OneUrlController(hasher,"738ddf")
       val result = controller.get(Map())
-      result.isLeft should equal (false)
-      result.isRight should equal (true)
-      result.right.get should equal ("http://www.google.com")
+      result.getClass should equal (classOf[URL])
+      result.asInstanceOf[URL].url should equal ("http://www.google.com")
     }
 
     it ("should give a 404 for a URL that is not known") {
       val controller = new OneUrlController(hasher,"noway")
       val result = controller.get(Map())
-      result.isLeft should equal (true)
-      result.isRight should equal (false)
-      result.left.get._1 should equal (404)
+      result.getClass should equal (classOf[Error])
+      result.asInstanceOf[Error].httpStatus should equal (404)
     }
     it ("should not respond to post") {
       val controller = new OneUrlController(hasher,"foo")

@@ -24,18 +24,16 @@ class TestAllUrlsController extends BaseControllerTest with Logs {
   describe("AllUrlsController") {
     it ("should respond to post") {
       val result = controller.post(Map("url" -> "http://www.google.com"))
-      result.isLeft should equal (false)
-      result.isRight should equal (true)
-      result.right.get should equal ("738ddf")
+      result.getClass should equal (classOf[Hash])
+      result.asInstanceOf[Hash].hash should equal ("738ddf")
     }
     it ("should respond get the same result for the same url") {
       var result = controller.post(Map("url" -> "http://www.google.com"))
-      val hash = result.right.get
+      val hash = result.asInstanceOf[Hash].hash
 
       result = controller.post(Map("url" -> "http://www.google.com"))
-      result.isLeft should equal (false)
-      result.isRight should equal (true)
-      result.right.get should equal (hash)
+      result.getClass should equal (classOf[Hash])
+      result.asInstanceOf[Hash].hash should equal (hash)
     }
     it ("should not respond to get") {
       shouldNotRespond(controller.get(Map()))

@@ -5,6 +5,10 @@
   <display-name>Shorty</display-name>
   <context-param>
     <param-name>dbDir</param-name>
+    <param-value>/Users/davec/Projects/shorty/shorty_db_dir</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dbDirProd</param-name>
     <param-value>/home/webadmin/xn--dfi5d.ws/webapps/shorty_db_dir</param-value>
   </context-param>
   <listener>
@@ -20,4 +24,7 @@
     <servlet-name>shorty</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
 </web-app>

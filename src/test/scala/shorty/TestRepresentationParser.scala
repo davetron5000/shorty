@@ -31,8 +31,8 @@ class TestRepresentationParser extends BaseTest {
       runTest(List("text/xml", "text/xml", "text/xml","text/html","image/png"),null,"text/html")
     }
 
-    it ("should be favor accept header") {
-      runTest(List("text/xml"),"application/json","text/xml")
+    it ("should favor param") {
+      runTest(List("text/xml"),"application/json","application/json")
     }
   }
 

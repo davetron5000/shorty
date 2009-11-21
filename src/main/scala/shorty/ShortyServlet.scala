@@ -31,12 +31,25 @@ class ShortyServlet extends HttpServlet
             case POST => controller.post(params(request))
             case DELETE => controller.delete(params(request))
           }
+          log("Got result " + result.toString)
           result match {
-            case Left((httpError,message)) => response.sendError(httpError,message)
-            case Right(url) => response.getWriter.println(url)
+            case URL(url) => repType match {
+              case "text/html" => response.sendRedirect(url)
+              case "text/xml" => {
+                response.setContentType(repType)
+                response.getWriter.println(<shortUrl>{url}</shortUrl>.toString)
+              }
+              case "application/json" => {
+                response.setContentType(repType)
+                response.getWriter().println("{ \"shortUrl\": \"" + url + "\" }")
+              }
+              case _ => response.getWriter.println(url)
+            }
+            case Hash(hash) => response.getWriter.println(hash)
+            case Error(httpError,message) => response.sendError(httpError,message)
           }
         }
-        case None => response.sendError(405)
+      case None => response.sendError(405)
     }
   }
 
