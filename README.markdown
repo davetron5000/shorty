@@ -19,5 +19,13 @@ It's written in Scala because I wanted a to write a small, but functional, appli
  `POST` to `http://yourdomain.com/context/?url=URL_TO_SHORTEN&api=API_KEY`
 
 The result will be the shortened URL. A `GET` to this URL will redirect you.  If you `GET` using an `Accept:` header of `text/xml` or `application/json`, you will get
-XML or JSON instead.  You can also specify `_type` as a request parameter to override the `Accept:` header
+XML or JSON instead.  You can also specify `_type` as a request parameter to override the `Accept:` header.  This should hopefully allow it to work with Tweetie as 
+my URL shortener of record.  
+
+# Why?
+
+ * Wanted to write a real-world Scala app I could use
+ * Wanted to write my own shortener for my domain
+ * Wanted to write something that could use Scala actors
+ * Wanted to learn SBT some
 
