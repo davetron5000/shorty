@@ -60,19 +60,11 @@ class ShortyServlet extends HttpServlet
             }
             case Hash(hash) => {
               val shortUrl = hostname + request.getContextPath + "/" + hash
+              response.setContentType(repType)
               repType match {
-                case "text/xml" => {
-                  response.setContentType(repType)
-                  response.getWriter.println(<shortUrl>{shortUrl}</shortUrl>.toString)
-                }
-                case "application/json" => {
-                  response.setContentType(repType)
-                  response.getWriter().println("{ \"shortUrl\": \"" + shortUrl + "\" }")
-                }
-                case "text/html" => {
-                  response.setContentType(repType)
-                  response.getWriter.println(<a href={shortUrl}>{shortUrl}</a>.toString)
-                }
+                case "text/xml" => response.getWriter.println(<shortUrl>{shortUrl}</shortUrl>.toString)
+                case "application/json" => response.getWriter().println("{ \"shortUrl\": \"" + shortUrl + "\" }")
+                case "text/html" => response.getWriter.println(<a href={shortUrl}>{shortUrl}</a>.toString)
                 case _ => response.getWriter.println(shortUrl)
               }
             }

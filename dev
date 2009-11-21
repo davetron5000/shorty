@@ -1,0 +1,2 @@
+sbt clean
+cp src/main/webapp/WEB-INF/web.xml.dev src/main/webapp/WEB-INF/web.xml
