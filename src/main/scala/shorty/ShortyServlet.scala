@@ -20,6 +20,14 @@ class ShortyServlet extends HttpServlet
       hasher
   }
 
+  override protected def apiKey =  {
+    val key = getInitParameter(ShortyServlet.API_KEY_PARAM)
+    if (key == null) {
+      throw new ServletException("You must set " + ShortyServlet.API_KEY_PARAM + " as an init parameter")
+    }
+    key
+  }
+
   override protected def service(request:HttpServletRequest, response:HttpServletResponse) = {
       val path = getPath(request)
       val repType = determineRepresentation(request)
@@ -88,4 +96,5 @@ class ShortyServlet extends HttpServlet
 object ShortyServlet {
   val DB_DIR_PARAM = "dbDir"
   val URI_HASHER_ATTRIBUTE = "uriHasher"
+  val API_KEY_PARAM = "apiKey"
 }

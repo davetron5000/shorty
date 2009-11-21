@@ -6,6 +6,7 @@ class TestRouter extends BaseTest {
 
   override def beforeEach = router = new AnyRef with Router {
     def uriHasher = null
+    def apiKey = "foo"
   }
   describe("Router") {
     it ("should route root to AllUrlsController") {
