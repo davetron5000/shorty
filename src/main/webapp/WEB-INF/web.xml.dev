@@ -7,10 +7,6 @@
     <param-name>dbDir</param-name>
     <param-value>/Users/davec/Projects/shorty/shorty_db_dir</param-value>
   </context-param>
-  <context-param>
-    <param-name>dbDirProd</param-name>
-    <param-value>/home/webadmin/xn--dfi5d.ws/webapps/shorty_db_dir</param-value>
-  </context-param>
   <listener>
     <listener-class>
       shorty.DBContextListener
@@ -19,6 +15,10 @@
   <servlet>
     <servlet-name>shorty</servlet-name>
     <servlet-class>shorty.ShortyServlet</servlet-class>
+    <init-param>
+      <param-name>apiKey</param-name>
+      <param-value>655321</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>shorty</servlet-name>
