@@ -37,15 +37,28 @@ class ShortyServlet extends HttpServlet
               case "text/html" => response.sendRedirect(url)
               case "text/xml" => {
                 response.setContentType(repType)
-                response.getWriter.println(<shortUrl>{url}</shortUrl>.toString)
+                response.getWriter.println(<longUrl>{url}</longUrl>.toString)
               }
               case "application/json" => {
                 response.setContentType(repType)
-                response.getWriter().println("{ \"shortUrl\": \"" + url + "\" }")
+                response.getWriter().println("{ \"longUrl\": \"" + url + "\" }")
               }
               case _ => response.getWriter.println(url)
             }
-            case Hash(hash) => response.getWriter.println(hash)
+            case Hash(hash) => {
+              val shortUrl = request.getRequestURL() + hash
+              repType match {
+                case "text/xml" => {
+                  response.setContentType(repType)
+                  response.getWriter.println(<shortUrl>{shortUrl}</shortUrl>.toString)
+                }
+                case "application/json" => {
+                  response.setContentType(repType)
+                  response.getWriter().println("{ \"shortUrl\": \"" + shortUrl + "\" }")
+                }
+                case _ => response.getWriter.println(shortUrl)
+              }
+            }
             case Error(httpError,message) => response.sendError(httpError,message)
           }
         }
