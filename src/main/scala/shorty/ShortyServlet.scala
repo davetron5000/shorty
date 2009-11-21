@@ -20,15 +20,20 @@ class ShortyServlet extends HttpServlet
       hasher
   }
 
-  override protected def apiKey =  {
-    val key = getInitParameter(ShortyServlet.API_KEY_PARAM)
-    if (key == null) {
-      throw new ServletException("You must set " + ShortyServlet.API_KEY_PARAM + " as an init parameter")
+  override protected def apiKey = initParam(ShortyServlet.API_KEY_PARAM)
+
+  protected def hostname = initParam(ShortyServlet.HOST_NAME_PARAM)
+
+  private def initParam(s:String) = {
+    val param = getInitParameter(s)
+    if (param == null) {
+      throw new ServletException("You must set " + s + " as an init parameter")
     }
-    key
+    param
   }
 
   override protected def service(request:HttpServletRequest, response:HttpServletResponse) = {
+      response.setCharacterEncoding("utf-8")
       val path = getPath(request)
       val repType = determineRepresentation(request)
       route(path) match {
@@ -54,7 +59,7 @@ class ShortyServlet extends HttpServlet
               case _ => response.getWriter.println(url)
             }
             case Hash(hash) => {
-              val shortUrl = request.getRequestURL() + hash
+              val shortUrl = hostname + request.getContextPath + "/" + hash
               repType match {
                 case "text/xml" => {
                   response.setContentType(repType)
@@ -63,6 +68,10 @@ class ShortyServlet extends HttpServlet
                 case "application/json" => {
                   response.setContentType(repType)
                   response.getWriter().println("{ \"shortUrl\": \"" + shortUrl + "\" }")
+                }
+                case "text/html" => {
+                  response.setContentType(repType)
+                  response.getWriter.println(<a href={shortUrl}>{shortUrl}</a>.toString)
                 }
                 case _ => response.getWriter.println(shortUrl)
               }
@@ -97,4 +106,5 @@ object ShortyServlet {
   val DB_DIR_PARAM = "dbDir"
   val URI_HASHER_ATTRIBUTE = "uriHasher"
   val API_KEY_PARAM = "apiKey"
+  val HOST_NAME_PARAM = "hostname"
 }
