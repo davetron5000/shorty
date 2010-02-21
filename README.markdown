@@ -28,7 +28,7 @@ Shorty is a RESTful url shortening application written in Scala.
 
 # Conclusions
 
-<a href="http://&#10106;&#10144;.ws/s/86c53f">Read my blog entry on it</a>, or just skim this list for the lazy:
+[Read my blog entry on it](http://www.naildrivin5.com/blog/2009/11/23/good-bad-ugly-scala-url-shortener.html), or just skim this list for the lazy:
 
  * Scala is a fun and concise language
  * Bridging un-genericized classes (e.g. `java.util.Enumeration`) to Scala is painful
