@@ -11,26 +11,35 @@ class DBContextListener extends ServletContextListener {
 
   override def contextInitialized(event:ServletContextEvent) = {
     event.getServletContext.log("Initializing our hasher/DB")
+    getDBDir(event) match {
+      case Right(dir) => {
+        val hasher = URIHasher(DB(dir))
+        hasher.start
+        uriHasher = hasher
+        event.getServletContext.setAttribute(ShortyServlet.URI_HASHER_ATTRIBUTE,uriHasher)
+      }
+      case Left(errorMessage) => throw new ServletException(errorMessage)
+    }
+  }
+
+  private[this] def getDBDir(event:ServletContextEvent):Either[String,File] = {
     val dirName = event.getServletContext.getInitParameter(ShortyServlet.DB_DIR_PARAM)
     if (dirName != null) {
       val dir = new File(dirName)
-      if (dir.exists()) {
-        if (dir.isDirectory()) {
-          val hasher = URIHasher(DB(dir))
-          hasher.start
-          uriHasher = hasher
-          event.getServletContext.setAttribute(ShortyServlet.URI_HASHER_ATTRIBUTE,uriHasher)
+      if (dir.exists) {
+        if (dir.isDirectory) {
+          Right(dir)
         }
         else {
-          throw new ServletException(dir.getAbsolutePath + " is not a directory")
+          Left(dir.getAbsolutePath + " is not a directory")
         }
       }
       else {
-        throw new ServletException(dir.getAbsolutePath + " doesn't exist")
+        Left(dir.getAbsolutePath + " doesn't exist")
       }
     }
     else {
-      throw new ServletException("You must supply a value for " + ShortyServlet.DB_DIR_PARAM)
+      Left("You must supply a value for " + ShortyServlet.DB_DIR_PARAM)
     }
   }
 
