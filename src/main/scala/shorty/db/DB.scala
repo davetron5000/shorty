@@ -4,6 +4,8 @@ import java.io._
 
 import com.sleepycat.je._
 
+import shorty.Logs
+
 /** Access to a Berkeley DB. 
   * This is a low-level key/value interface.
   * Use the DB object to create instances. 
@@ -65,17 +67,11 @@ class DB(env:Environment,name:String) extends Logs {
 /** Factory for DB instances */
 object DB extends Logs {
   /**
-    * Create a new DB instance with the default name, using the given dir.
-    * @param dir the directory where you want the db files created
-    */
-  def apply(dir:File):DB = apply(dir,"shorty")
-
-  /**
     * Create a new DB instance, using the given dir.
     * @param dir the directory where you want the db files created
     * @param name the name of the db, if you care
     */
-  def apply(dir:File, name:String) = {
+  def apply(dir:File, name:String = "shorty") = {
     debug("Creating new DB " + name + " in " + dir)
     if (!dir.exists()) {
       info(dir.getAbsolutePath + " didnt exist, making it...")

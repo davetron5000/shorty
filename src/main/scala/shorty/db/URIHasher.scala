@@ -1,6 +1,7 @@
 package shorty.db
 
 import scala.actors._
+import shorty.Logs
 
 /**
   * This hashes URIs to short character strings that we store
@@ -72,7 +73,6 @@ class URIHasher(database:DB, hasher: (String) => String) extends Actor with Logs
   * Factory for creating URIHasher instances 
   */
 object URIHasher {
-  def apply(database:DB) = new URIHasher(database,new MessageDigestHasher("sha"))
-  def apply(database:DB,hasher:(String) => String) = new URIHasher(database,hasher)
+  def apply(database:DB,hasher:(String) => String = new MessageDigestHasher("sha")) = new URIHasher(database,hasher)
 }
 
