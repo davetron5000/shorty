@@ -1,5 +1,9 @@
 Shorty is a RESTful url shortening application written in Scala.
 
+# License
+
+Licensed under the MIT license, see LICENSE.txt
+
 # Building
 
  * `cp src/main/webapp/WEB-INF/web.xml.dev src/main/webapp/WEB-INF/web.xml.prod`
