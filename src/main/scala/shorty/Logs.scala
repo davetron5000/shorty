@@ -21,11 +21,11 @@ trait Logs {
 
   import org.apache.log4j.Level._
 
-  def trace(thunk: => Unit) = if (logger.isEnabledFor(TRACE)) thunk
+  def tracedo(thunk: => Unit) = if (logger.isEnabledFor(TRACE)) thunk
   def trace(message: => String) = if (logger.isEnabledFor(TRACE)) logger.trace(message)
   def trace(message: => String, ex:Throwable) = if (logger.isEnabledFor(TRACE)) logger.trace(message,ex)
 
-  def debug(thunk: => Unit) = if (logger.isEnabledFor(DEBUG)) thunk
+  def debugdo(thunk: => Unit) = if (logger.isEnabledFor(DEBUG)) thunk
   def debug(message: => String) = if (logger.isEnabledFor(DEBUG)) logger.debug(message)
   def debug(message: => String, ex:Throwable) = if (logger.isEnabledFor(DEBUG)) logger.debug(message,ex)
 
@@ -35,20 +35,20 @@ trait Logs {
     result
   }
 
-  def info(thunk: => Unit) = if (logger.isEnabledFor(INFO)) thunk
+  def infodo(thunk: => Unit) = if (logger.isEnabledFor(INFO)) thunk
   def info(message: => String) = if (logger.isEnabledFor(INFO)) logger.info(message)
   def info(message: => String, ex:Throwable) = if (logger.isEnabledFor(INFO)) logger.info(message,ex)
 
-  def warn(thunk: => Unit) = if (logger.isEnabledFor(WARN)) thunk
+  def warndo(thunk: => Unit) = if (logger.isEnabledFor(WARN)) thunk
   def warn(message: => String) = if (logger.isEnabledFor(WARN)) logger.warn(message)
   def warn(message: => String, ex:Throwable) = if (logger.isEnabledFor(WARN)) logger.warn(message,ex)
 
-  def error(thunk: => Unit) = if (logger.isEnabledFor(ERROR)) thunk
+  def errordo(thunk: => Unit) = if (logger.isEnabledFor(ERROR)) thunk
   def error(ex:Throwable) = if (logger.isEnabledFor(ERROR)) logger.error(ex.toString,ex)
   def error(message: => String) = if (logger.isEnabledFor(ERROR)) logger.error(message)
   def error(message: => String, ex:Throwable) = if (logger.isEnabledFor(ERROR)) logger.error(message,ex)
 
-  def fatal(thunk: => Unit) = if (logger.isEnabledFor(FATAL)) thunk
+  def fataldo(thunk: => Unit) = if (logger.isEnabledFor(FATAL)) thunk
   def fatal(ex:Throwable) = if (logger.isEnabledFor(FATAL)) logger.fatal(ex.toString,ex)
   def fatal(message: => String) = if (logger.isEnabledFor(FATAL)) logger.fatal(message)
   def fatal(message: => String, ex:Throwable) = if (logger.isEnabledFor(FATAL)) logger.fatal(message,ex)
