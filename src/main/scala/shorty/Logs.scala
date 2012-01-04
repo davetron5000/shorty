@@ -21,6 +21,9 @@ trait Logs {
 
   import org.apache.log4j.Level._
 
+  def trace(message: => String) = if (logger.isEnabledFor(TRACE)) logger.trace(message)
+  def trace(message: => String, ex:Throwable) = if (logger.isEnabledFor(TRACE)) logger.trace(message,ex)
+
   def debug(message: => String) = if (logger.isEnabledFor(DEBUG)) logger.debug(message)
   def debug(message: => String, ex:Throwable) = if (logger.isEnabledFor(DEBUG)) logger.debug(message,ex)
   def debugValue[T](valueName: String, value: => T):T = {
